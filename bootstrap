@@ -1,0 +1,46 @@
+#! /bin/sh
+
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2022 Avinal Kumar <avinal.xlvii@gmail.com>
+
+echo "Installing build dependencies"
+DISTRO_NAME=$(lsb_release --id --short)
+case "$DISTRO_NAME" in
+    Debian|Ubuntu)
+        echo "Installing dependencies for Debian-like distros..."
+        sudo apt install cmake git ninja-build make
+        ;;
+    Fedora)
+        echo "Installing dependencies for Fedora..."
+        sudo dnf install cmake git ninja-build make gcc-arm-linux-gnu arm-none-eabi-gcc-cs-c++ \
+        arm-none-eabi-gcc-cs arm-none-eabi-binutils arm-none-eabi-newlib
+        ;;
+    *) echo "Distro is not recognized, build dependencies won't be installed!!!"
+esac
+
+
+echo "Fetching the submodules..."
+git submodule update --init
+for MODULE in "pico-sdk" "pico-extras" "pimoroni-pico"
+do
+    (
+    cd "$MODULE" || exit
+    git submodule update --init
+    )
+done
+
+echo "Creating build directory"
+if [ ! -d "build" ]
+then
+    mkdir build
+else
+    echo "build directory exists..."
+fi
+
+cd build
+
+echo "Generating CMake project..."
+# using ninja for faster build
+cmake .. -DPICO_BOARD=pimoroni_badger2040 -GNinja
+
+echo "Bootstrap complete. Please goto build directory and run ninja to compile."
