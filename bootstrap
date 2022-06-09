@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env bash
 
 # SPDX-License-Identifier: BSD-3-Clause
 # SPDX-FileCopyrightText: 2022 Avinal Kumar <avinal.xlvii@gmail.com>
@@ -8,12 +8,14 @@ DISTRO_NAME=$(lsb_release --id --short)
 case "$DISTRO_NAME" in
     Debian|Ubuntu)
         echo "Installing dependencies for Debian-like distros..."
-        sudo apt install cmake git ninja-build make
+        sudo apt-get update && export DEBIAN_FRONTEND=noninteractive \
+        && sudo apt-get -y install gcc g++ cmake git ninja-build make gcc-arm-none-eabi build-essential
         ;;
     Fedora)
         echo "Installing dependencies for Fedora..."
-        sudo dnf install cmake git ninja-build make gcc-arm-linux-gnu arm-none-eabi-gcc-cs-c++ \
-        arm-none-eabi-gcc-cs arm-none-eabi-binutils arm-none-eabi-newlib
+        sudo dnf install -y gcc g++ cmake git ninja-build make \
+        gcc-arm-linux-gnu arm-none-eabi-gcc-cs-c++ arm-none-eabi-gcc-cs \
+        arm-none-eabi-binutils arm-none-eabi-newlib
         ;;
     *) echo "Distro is not recognized, build dependencies won't be installed!!!"
 esac
@@ -21,13 +23,7 @@ esac
 
 echo "Fetching the submodules..."
 git submodule update --init
-for MODULE in "pico-sdk" "pico-extras" "pimoroni-pico"
-do
-    (
-    cd "$MODULE" || exit
-    git submodule update --init
-    )
-done
+git submodule foreach git submodule update --init
 
 echo "Creating build directory"
 if [ ! -d "build" ]

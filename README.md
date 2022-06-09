@@ -18,8 +18,9 @@ I have gathered all the required dependencies for developing C++ programs for Ba
   - `arm-none-eabi-binutils`
   - `arm-none-eabi-newlib`
 - Build dependencies for Ubuntu
-  - gcc-arm-none-eabi
-  - build-essential
+  - `gcc-arm-none-eabi`
+  - `build-essential`
+  - `gcc-arm-none-eabi`
 - Project dependencies
   - [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico)
   - [pico-extras](https://github.com/raspberrypi/pico-extras)
