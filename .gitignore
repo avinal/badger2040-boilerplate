@@ -35,3 +35,8 @@
 .vscode
 build/**
 .cache
+
+# submodules
+pico-sdk/**
+pimoroni-pico/**
+pico-extras/**
